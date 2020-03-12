@@ -1,0 +1,53 @@
+"GEOID","NAME","variable","estimate","moe"
+"01","Alabama","homevalue",128500,680
+"02","Alaska","homevalue",257100,2350
+"04","Arizona","homevalue",176900,741
+"05","Arkansas","homevalue",114700,719
+"06","California","homevalue",409300,972
+"08","Colorado","homevalue",264600,925
+"09","Connecticut","homevalue",269300,1149
+"10","Delaware","homevalue",233100,1433
+"11","District of Columbia","homevalue",506100,9832
+"12","Florida","homevalue",166800,384
+"13","Georgia","homevalue",152400,525
+"15","Hawaii","homevalue",538400,4701
+"16","Idaho","homevalue",167900,809
+"17","Illinois","homevalue",174800,370
+"18","Indiana","homevalue",126500,403
+"19","Iowa","homevalue",132800,648
+"20","Kansas","homevalue",135300,685
+"21","Kentucky","homevalue",126100,575
+"22","Louisiana","homevalue",148300,929
+"23","Maine","homevalue",176000,1322
+"24","Maryland","homevalue",290400,755
+"25","Massachusetts","homevalue",341000,774
+"26","Michigan","homevalue",127800,434
+"27","Minnesota","homevalue",191500,443
+"28","Mississippi","homevalue",105700,775
+"29","Missouri","homevalue",141200,464
+"30","Montana","homevalue",199700,1774
+"31","Nebraska","homevalue",137300,743
+"32","Nevada","homevalue",191600,1392
+"33","New Hampshire","homevalue",239700,1112
+"34","New Jersey","homevalue",316400,795
+"35","New Mexico","homevalue",161600,921
+"36","New York","homevalue",286300,941
+"37","North Carolina","homevalue",157100,424
+"38","North Dakota","homevalue",164000,1273
+"39","Ohio","homevalue",131900,331
+"40","Oklahoma","homevalue",121300,427
+"41","Oregon","homevalue",247200,962
+"42","Pennsylvania","homevalue",167700,301
+"44","Rhode Island","homevalue",238200,1307
+"45","South Carolina","homevalue",143600,687
+"46","South Dakota","homevalue",146700,1287
+"47","Tennessee","homevalue",146000,520
+"48","Texas","homevalue",142700,398
+"49","Utah","homevalue",224600,886
+"50","Vermont","homevalue",218900,1641
+"51","Virginia","homevalue",248400,787
+"53","Washington","homevalue",269300,741
+"54","West Virginia","homevalue",107400,1055
+"55","Wisconsin","homevalue",167000,359
+"56","Wyoming","homevalue",199900,2243
+"72","Puerto Rico","homevalue",118600,583

@@ -1,0 +1,206 @@
+---
+title: 'Homework #2: SDGB-7844'
+author: "Chris Hayduk"
+fordham_id_number: "A#11146981"
+fordham_email: "chayduk@fordham.edu"
+date: "10/31/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Choose 5 problems below to complete.  Each question below comes from our text, **Introduction to Scientific Programming and Simulation with R**.  Please comment your code where appropriate.
+
+### Chapter 3 - Exercise 1
+
+```{r}
+x <- runif(1, -10, 10)
+
+print(paste("x =", x))
+
+if(x <= 0){
+  y <- -(x^3)
+} else if(x > 0 && x < 1){
+  y <- x^2
+} else{
+  y <- sqrt(x)
+}
+
+print(y)
+
+```
+
+### Chapter 3 - Exercise 2
+
+```{r}
+h <- function(x, n){
+  sum <- 1
+  
+  if(n > 0){
+    for(i in 1:n){
+      sum <- sum + (x^i) 
+    }
+  }
+  
+  return(sum)
+}
+
+print(h(10,4))
+
+```
+
+### Chapter 3 - Exercise 4
+
+
+```{r}
+h_while <- function(x, n){
+  sum <- 1
+  
+  while(n > 0){
+    sum <- sum + (x^n)
+    
+    n <- n-1
+  }
+  
+  return(sum)
+}
+
+print(h_while(10,4))
+
+h_vector <- function(x, n){
+  x_vec <- rep(x, times=n+1)
+  
+  n_vec <- 0:n
+  
+  prelim_sum <- x_vec^n_vec
+  
+  return(sum(prelim_sum))
+}
+
+print(h_vector(10,4))
+
+```
+
+### Chapter 3 - Exercise 6
+
+
+```{r}
+geom_mean_loop <- function(x){
+  geom_mean <- 1
+  n <- length(x)
+  
+  if(n > 0){
+    for(i in 1:n){
+      geom_mean <- geom_mean*x[i]
+    }
+  
+    geom_mean <- (geom_mean)^(1/n)
+  }
+  
+  return(geom_mean)
+}
+
+geom_mean_vector <- function(x){
+  geom_mean <- 1
+  n <- length(x)
+  
+  geom_mean <- prod(x)
+  
+  geom_mean <- (geom_mean)^(1/n)
+  
+  return(geom_mean)
+}
+
+print(paste("Geometric mean calculated with a loop:",geom_mean_loop(c(2,3,3,2,4,5,10))))
+
+print(paste("Geometric mean calculated with vector ops:",geom_mean_vector(c(2,3,3,2,4,5,10))))
+
+harmonic_mean <- function(x){
+  harm_mean <- 0
+  n <- length(x)
+  
+  if(n > 0){
+    for(i in 1:n){
+      if(x[i] != 0) harm_mean <- 1/(x[i])
+    }
+  }
+  
+  return(harm_mean)
+}
+
+harmonic_greater_than_geom <- 0
+
+for(i in 1:1000){
+  y <- runif(10, 0, 100)
+  
+  if(harmonic_mean(y) > geom_mean_loop(y)){
+    harmonic_greater_than_geom <- harmonic_greater_than_geom + 1
+  }
+}
+
+print(paste("Number of times that the harmonic mean was greater than the geometric mean in 1000 trials:", harmonic_greater_than_geom))
+
+```
+
+### Chapter 3 - Exercise 7
+
+
+```{r}
+x <- runif(10,-100,100)
+
+third_elem_sum <- 0
+for(i in 1:length(x)){
+  if(i%%3 == 0){
+    third_elem_sum <- third_elem_sum + x[i]
+  }
+}
+
+print(x)
+print(paste("Sum of third elements =", third_elem_sum))
+
+#Alternatively:
+
+x <- x[c(rep(FALSE,2),TRUE)]
+
+print(paste("Sum of third elements using vector ops =", sum(x)))
+
+
+```
+
+
+### Chapter 3 - Exercise 12
+
+```{r}
+won <- FALSE
+lost <- FALSE
+first_throw <- TRUE
+saved_num <- 0
+
+while(!(won) && !(lost)){ #Run loop while the user has not lost or won
+  x <- sum(ceiling(6*runif(2)))
+
+  #Check if it is the user's first roll of the dice
+  if(first_throw){
+    if(x == 2 || x == 3 || x == 12){  #check if the user lost
+      lost <- TRUE
+    } else{   #If user did not lost, save the rolled number and set first_throw to false
+      saved_num <- x
+      first_throw <- FALSE
+    }
+  } else{
+    if(x == saved_num){ #Check if user rolled the same number (and won)
+      won <- TRUE
+    } else if(x == 7){  #Check if user rolled a 7 (and lost)
+      lost <- TRUE
+    }
+  }
+}
+
+if(won == TRUE){
+  print("Congratulations, you won!")
+} else{
+  print("You lost.") 
+}
+```

@@ -1,0 +1,130 @@
+---
+title: 'Homework #1: SDGB-7844'
+author: "Chris Hayduk"
+fordham_id_number: "A11146981"
+fordham_email: "chayduk@fordham.edu"
+date: "10/9/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Each of the exercises below are from our textbook - _Introduction to Scientific Programming and Simulaiton Using R._ The exercises begin on p. 26.  Make sure to comment your code.  Points will be deducted for uncommented code!  
+
+You should create new code blocks if necessary to answer the question.  You should also use plaintext to provide an explanation for your code if the question calls for one.
+
+### Chapter 2 - Exercise 1a. 
+
+```{r}
+
+
+```
+
+### Chapter 2 - Exercise 1b. 
+
+```{r}
+
+
+```
+
+### Chapter 2 - Exercise 1c. 
+
+```{r}
+ 
+
+```
+
+### Chapter 2 - Exercise 1d. 
+
+```{r}
+
+
+```
+
+### Chapter 2 - Exercise 1e. 
+
+```{r}
+
+
+```
+
+
+### Chapter 2 - Exercise 2a.
+
+```{r}
+
+
+```
+
+### Chapter 2 - Exercise 2b.
+
+```{r}
+
+
+```
+
+
+### Chapter 2 - Exercise 2c. 
+
+```{r}
+
+
+```
+
+### Chapter 2 - Exercise 2d.
+
+```{r}
+ 
+
+```
+
+### Chapter 2 - Exercise 4
+
+```{r}
+
+```
+
+
+### Chapter 2 - Exercise 5a. 
+
+```{r}
+
+```
+
+### Chapter 2 - Exercise 5b. 
+
+```{r}
+
+```
+
+### Chapter 2 - Exercise 5c.
+
+```{r}
+
+```
+
+### Chapter 2 - Exercise 5d. 
+
+```{r}
+
+```
+
+### Chapter 2 - Exercise 5e. 
+
+```{r}
+
+```
+
+### Chapter 2 - Exercise 6
+
+```{r}
+
+```
+
+### Chapter 2 - Exercise 7
+
+```{r}
+
+```

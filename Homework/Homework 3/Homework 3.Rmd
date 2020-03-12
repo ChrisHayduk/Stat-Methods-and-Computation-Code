@@ -1,0 +1,163 @@
+---
+title: "Homework 3"
+author: "Chris Hayduk"
+date: "November 14, 2018"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exploratory Analysis
+
+1. The American Community Survey data is available at the US, region, division, state, county, and county subdivision levels. By contrast, the Deccenial Census is available at the state, county, county subdivision, subminor civil division, tract, block, and block group levels.
+
+2. Variables for race:
+  + B02001_001E: Estimate!!Total (RACE - int)
+  + B02001_002E: Estimate!!Total!!White alone (RACE - int)
+  + B02001_003E: Estimate!!Total!!Black or African American alone (RACE - int)
+  + B02001_004E: Estimate!!Total!American Indian and Alaska Native alone (RACE - int)
+  + B02001_005E: Estimate!!Total!!Asian alone (RACE - int)
+  + B02001_006E: Estimate!!Total!!Native Hawaiian and Other Pacific Islander alone (RACE - int)
+  + B03002_001E: Estimate!!Total (HISPANIC OR LATINO ORIGIN BY RACE - int)
+  + B03002_002E: Estimate!!Total!!Not Hispanic or Latino (HISPANIC OR LATINO ORIGIN BY RACE - int)
+  + B03002_012E: Estimate!!Total!!Hispanic or Latino (HISPANIC OR LATINO ORIGIN BY RACE - int)
+
+3. Race and Ethnicity:
+  + Race: "The Census Bureau defines race as a person's self-identification with one or more social groups. An individual can report as White, Black or African American, Asian, American Indian and Alaska Native, Native Hawaiian and Other Pacific Islander, or some other race. Survey respondents may report multiple races."
+  + Ethnicity: "Ethnicity determines whether a person is of Hispanic origin or not. For this reason, ethnicity is broken in two categories, Hispanic or Latino and Not Hispanic or Latino. Hispanics may report as any race."
+  + Source: https://www.census.gov/mso/www/training/pdf/race-ethnicity-onepager.pdf
+
+4. No margin of error is provided for the population and racial/ethnic demographic estimates included int he ACS. Without knowing the margin of error for these estimates, we will not be able to provide a confidence interval for the Diversity Index and thus will not be able to say how close our estimate is to the true value of the Diversity Index.
+
+5. The code to complete this question is included in the code block below.
+
+## Computing the USA Today Diversity Index
+
+
+```{r warning = FALSE, message=FALSE, error = FALSE, results = 'hide'}
+library(tidycensus)
+library(tidyverse)
+library(sf)
+library(stringr)
+
+census_api_key("68009a7ec40d6be0a273f14a8a8920e924062829")
+
+#Exploratory Analysis - 5
+
+race_and_ethnicity <- get_acs(geography = "county", variables = c(total_pop = "B02001_001", white_pop = "B02001_002", black_pop = "B02001_003", amerindian_pop = "B02001_004", asian_pop = "B02001_005", pacific_islander_pop = "B02001_006", total_pop2 = "B03002_001", not_hispanic_pop = "B03002_002", hispanic_pop = "B03002_012"), state = c("NY", "NJ", "CT"), geometry = TRUE)
+
+race_and_ethnicity <- race_and_ethnicity %>% separate(NAME, into = c("County", "State"), sep = ", ")
+
+#Step 1
+
+race_and_ethnicity <- race_and_ethnicity %>% select(-moe) %>% spread(key = variable, value = estimate)
+
+#Step 2
+
+race_and_ethnicity <- race_and_ethnicity %>% 
+  mutate(P_Racial = ((white_pop)^2+(black_pop)^2+(amerindian_pop)^2+(asian_pop)^2+(pacific_islander_pop)^2)/(total_pop)^2)
+
+#Step 3
+
+race_and_ethnicity <- race_and_ethnicity %>% 
+  mutate(P_Ethnic = (hispanic_pop/total_pop2)^2 +(not_hispanic_pop/total_pop2)^2)
+
+#Step 4
+
+race_and_ethnicity <- race_and_ethnicity %>%
+  mutate(P_Same = P_Racial * P_Ethnic)
+
+#Step 5
+
+race_and_ethnicity <- race_and_ethnicity %>%
+  mutate(DiversityIndex = (1 - P_Same)*100)
+
+```
+
+
+## Geo-spatial Analysis and Visualization
+
+
+```{r warning = FALSE, message=FALSE, error = FALSE}
+library(ggplot2)
+library(leaflet)
+
+#6
+
+ggplot(race_and_ethnicity, aes(x=DiversityIndex, fill = State)) + geom_histogram(binwidth = 5) + labs(x = "Diversity Index", y = "Count", title = "Distribution of the Diversity Index")
+
+```
+
+The histogram appears to be right-skewed. Thus, the mean is greater than the median.
+
+```{r warning = FALSE, message=FALSE, error = FALSE}
+#7
+
+#Chart with top 10 counties by population
+race_and_ethnicity <- race_and_ethnicity %>% arrange(desc(total_pop))
+
+race_and_ethnicity[1:10,] %>% mutate(Population_Rank = 1:10) %>% 
+  ggplot(aes(x=Population_Rank, y = DiversityIndex)) + 
+  geom_point(size = 3) + 
+  geom_smooth() +
+  scale_x_continuous(breaks = seq(1, 10, by = 1)) +
+  labs(x = "Population Rank", y = "Diversity Index", title = "Population Rank vs. Diversity Index")
+
+#Chart with top 10 counties by Diversity Index
+race_and_ethnicity <- race_and_ethnicity %>% arrange(desc(DiversityIndex))
+
+race_and_ethnicity[1:10,] %>% mutate(Diversity_Rank = 1:10) %>% 
+  ggplot(aes(x=Diversity_Rank, y = total_pop)) + 
+  geom_point(size = 3) + 
+  geom_smooth() +
+  scale_x_continuous(breaks = seq(1, 10, by = 1)) +
+  labs(x = "Diversity Index Rank", y = "Population", title = "Diversity Index Rank vs. Population")
+
+#8 & #9
+
+pal <- colorQuantile(palette = "viridis", domain = race_and_ethnicity$DiversityIndex, n = 10)
+
+race_and_ethnicity %>%
+  leaflet(width = "100%") %>%
+  addProviderTiles(provider = "CartoDB.Positron") %>%
+  addPolygons(label = ~ (paste0(County, " - ", "Diversity Index: ", format(round(DiversityIndex, 2), nsmall = 2))
+),
+              stroke = FALSE,
+              smoothFactor = 0,
+              fillOpacity = 0.7,
+              color = ~ pal(DiversityIndex)) %>%
+  addLegend("bottomright", 
+            pal = pal,
+            values = ~ DiversityIndex,
+            title = "DiversityIndex",
+            opacity = 1)
+
+
+```
+
+10. As can be seen in the plot, the most diverse areas tend to be concentrated in the New York City & Philadelphia areas. Upstate NY and the counties in Connecticut bordering Massachussets are the least diverse. On the other hand, Downstate NY, New Jersey, and the counties in Connecticut bordering New York all rank highly on the diversity index.
+
+## Extra Credit
+
+
+```{r warning = FALSE, message=FALSE, error = FALSE}
+
+#11
+
+household_income <- get_acs(geography = "county", variables = c(medincome = "B19013_001"), state = c("NY", "NJ", "CT"), geometry = TRUE)
+
+household_income <- household_income %>% select(-NAME, -GEOID, -variable)
+
+combined_data <- st_join(race_and_ethnicity, household_income)
+
+combined_data <- combined_data %>% rename(Median_Household_Income = estimate)
+
+ggplot(combined_data, aes(x=DiversityIndex, y = Median_Household_Income)) + 
+  geom_point(mapping = aes(color = State)) + 
+  geom_smooth(mapping = aes(color = State)) +
+  labs(x = "Diversity Index", y = "Median Household Income", title = "Diversity Index vs. Median Household Income")
+```
+
+12. There appears to be no relationship between the median household income and Diversity Index in Connecticut and New Jersey. However, in New York, there is a positive correlation between the median household income and Diversity Index. This likely occurs because the least diverse areas of New York are in upstate NY, which has a much lower cost of living than the NYC metropolitan area. Since the cost of living is much lower, we would expect to see lower income on average, which is exactly what we see in the plot above.
